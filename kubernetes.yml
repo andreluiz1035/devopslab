@@ -1,0 +1,60 @@
+---
+- hosts: kubernetes
+  gather_facts: yes
+  become: true
+  tasks:
+  - name: Install Docker
+    apt: pkg=docker.io  state=present update_cache=yes
+
+  - name: Enable Docker
+    systemd:
+       name: docker
+       enabled: yes
+  
+  - name: Ensure Docker Started
+    service: name=docker state=started enabled=yes
+
+  - name: get docker version
+    shell: "docker -v | cut -d ' ' -f 3 | cut -d ',' -f 1"
+    register: version
+
+  - debug: var=version.stdout
+
+  - name: Add the Kubernetes signing key
+    apt_key: 
+       url: https://packages.cloud.google.com/apt/doc/apt-key.gpg 
+       state: present 
+
+  - name: Add Kubernetes  repository Kubernetes
+    apt_repository: 
+       repo: deb http://apt.kubernetes.io/ kubernetes-xenial main 
+       state: present 
+       filename: kubernetes 
+       update_cache: yes
+
+  - name: Install Kubernetes binaries
+    apt: pkg=kubeadm  state=present update_cache=yes
+
+  - name: Disable Swapp
+    shell: "swapoff -a"
+
+  - name: Set Hostname to Master
+    hostname:
+       name: k8s-ansible3
+
+  - name: Initialize the Kubernetes cluster using kubeadm
+    command: kubeadm init --pod-network-cidr=10.244.0.0/16 
+
+  - name: Create $HOME/.kube
+    shell: "mkdir -p $HOME/.kube"
+  
+  - name: CP admin.conf
+    shell: "cp -i /etc/kubernetes/admin.conf $HOME/.kube/config"
+
+  - name: Chown .kube/config
+    shell: "chown $(id -u):$(id -g) $HOME/.kube/config"
+  
+  - name: Install flannel
+    become: false
+    command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml  
+
