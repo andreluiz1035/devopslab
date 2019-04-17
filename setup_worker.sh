@@ -28,4 +28,29 @@ else
 	exit
 fi
 
+echo "#########################################################################################"
+echo "  "
+echo "STEP: SUDO WITHOUT PASSWD"
+echo "  "
+echo "#########################################################################################"
+
+sed  -i '/%sudo/a %sudo   ALL=(ALL:ALL) NOPASSWD:ALL' /etc/sudoers
+
+if [ $? -eq 0 ]; then
+        echo "SUDO FREE"
+else
+        echo "Problemas com sudo"
+        exit
+fi
+
+
+
+
+
+
+
+
+
+
+
 
