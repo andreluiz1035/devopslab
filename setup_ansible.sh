@@ -60,8 +60,20 @@ else
         exit
 fi
 
-read -p "Qual seu nome" oi
-echo $oi
+read -p "Do you want to add hosts file entries ? If Yes, type 1: (If you have consistent DNS name resolution, you dont need to edit hosts file)." ANSWARE_VAR
+if [ $ANSWARE_VAR -eq 1 ]; then
+	read -p "Please, insert the hostname of your k8s node :" MASTER_VAR
+        read -p "Please, insert the ip address of you k8s node :" MASTERIP_VAR
+        echo "$MASTERIP_VAR   $MASTER_VAR" >> /etc/hosts
+fi
+
+
+read -p "Do you want to copy your SSH Keys to the K82 Server? If Yes, type 1: " ANSWARE_VAR
+if [ $ANSWARE_VAR -eq 1 ]; then
+	read -p "Please, enter the sudo enabled user :" USER_VAR
+	read -p "Please, enter the hostaname of you k8s node :" K8S_VAR
+	ssh-copy-id -i ~/.ssh/id_rsa.pub $USER_VAR@$K8S_VAR
+fi
 
 
 
