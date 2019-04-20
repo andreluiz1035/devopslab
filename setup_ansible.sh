@@ -75,5 +75,28 @@ if [ $ANSWARE_VAR -eq 1 ]; then
 	ssh-copy-id -i ~/.ssh/id_rsa.pub $USER_VAR@$K8S_VAR
 fi
 
+echo "$HEADER_VAR"
+echo "$BLANK_VAR "
+echo "STEP: ADD ANSIBLE REPOSITORY"
+echo "$BLANK_VAR"
+echo "$HEADER_VAR"
+
+apt-add-repository ppa:ansible/ansible
+apt update
+
+echo "$HEADER_VAR"
+echo "$BLANK_VAR "
+echo "STEP: INSTALL ANSIBLE"
+echo "$BLANK_VAR"
+echo "$HEADER_VAR"
+apt install -y ansible
+if [ $? -eq 0 ]; then
+	echo "Ansible instalado com sucesso."
+else
+	echo "problemas instalando ansible."
+fi
+
+
+
 
 
