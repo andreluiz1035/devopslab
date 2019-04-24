@@ -1,1 +1,9 @@
 LAB DEVOPS
+
+
+1) Set the ip address with internet acces on your K8S and Ansible hosts.
+
+2) Run the setup_worker.sh script on your K8S node.
+
+3) Run the setup_ansible.sh script on your ansible host.
+
